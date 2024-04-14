@@ -1,0 +1,8 @@
+node_modules/
+schema.sql
+venv/
+env/
+mysite/__pycache__
+chat/__pycache__
+.vscode/
+.env
