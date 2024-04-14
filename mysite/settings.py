@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import dj_database_url
+from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,12 +81,17 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 ASGI_APPLICATION = 'mysite.asgi.application'
 
+if os.environ.get('REDIS_URL') != None:
+    REDIS_URL = os.environ.get('REDIS_URL')
+else:
+    REDIS_URL = config('REDIS_URL')
+
 # CHANNERLS
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [(REDIS_URL)]
         },
     },
 }
