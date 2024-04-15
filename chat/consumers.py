@@ -14,9 +14,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = 'chat_%s' % self.id
         self.user = self.scope['user']
 
-        print("Id : ", self.id)
-        print("Conexión establecida room_group_name: ", self.room_group_name)
-        print("Conexión establecida channel_name: ", self.channel_name)
+        # print("Id : ", self.id)
+        # print("Conexión establecida room_group_name: ", self.room_group_name)
+        # print("Conexión establecida channel_name: ", self.channel_name)
 
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
