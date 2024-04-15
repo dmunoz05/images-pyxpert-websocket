@@ -13,7 +13,7 @@ def process_video(image):
     # Functions
     image_data = image
 
-    def dibujar(mask, color, textColor, frame):
+    def draw(mask, color, textColor, frame):
         contornos, _ = cv2.findContours(
             mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for c in contornos:
@@ -105,13 +105,13 @@ def process_video(image):
             maskVioleta = cv2.inRange(frameHSV, violetaBajo, violetaAlto)
 
             # Dibujamos los contornos
-            dibujar(maskRed, (0, 0, 255), 'Rojo', Img)
-            dibujar(maskOrange, (0, 165, 255), 'Naranja', Img)
-            dibujar(maskAmarillo, (0, 255, 255), 'Amarillo', Img)
-            dibujar(maskVerde, (0, 255, 0), 'Verde', Img)
-            dibujar(maskAzul, (255, 0, 0), 'Azul', Img)
-            dibujar(maskMorado, (255, 0, 255), 'Morado', Img)
-            dibujar(maskVioleta, (255, 0, 255), 'Violeta', Img)
+            draw(maskRed, (0, 0, 255), 'Rojo', Img)
+            draw(maskOrange, (0, 165, 255), 'Naranja', Img)
+            draw(maskAmarillo, (0, 255, 255), 'Amarillo', Img)
+            draw(maskVerde, (0, 255, 0), 'Verde', Img)
+            draw(maskAzul, (255, 0, 0), 'Azul', Img)
+            draw(maskMorado, (255, 0, 255), 'Morado', Img)
+            draw(maskVioleta, (255, 0, 255), 'Violeta', Img)
 
             buffer = BytesIO()
 
@@ -153,7 +153,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message = text_data_json["message"]
             image_data = text_data_json["image_data"]
 
-            # Dibujar
+            # draw
             # image_process = await ProcessVideo.run(image_data)
 
             # Send message to room group
