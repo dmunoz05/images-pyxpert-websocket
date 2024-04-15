@@ -8,6 +8,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 
+
 def process_video(image):
     # Functions
     image_data = image
@@ -121,3 +122,64 @@ def process_video(image):
             image_data = buffer.getvalue()
 
     return image_data
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = f"chat_{self.room_name}"
+
+        self.id = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = 'chat_%s' % self.id
+        self.user = self.scope['user']
+
+        # print("Id : ", self.id)
+        # print("Conexión establecida room_group_name: ", self.room_group_name)
+        # print("Conexión establecida channel_name: ", self.channel_name)
+
+        # Join room group
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        try:
+            text_data_json = json.loads(text_data)
+            message = text_data_json["message"]
+            image_data = text_data_json["image_data"]
+
+            # Dibujar
+            # image_process = await ProcessVideo.run(image_data)
+
+            # Send message to room group
+            await self.channel_layer.group_send(
+                self.room_group_name, {"type": "chat.message",
+                                       "message": message, "image_data": image_data}
+            )
+        except:
+            print('Error inesperado')
+
+    # Receive message from room group
+    async def chat_message(self, event):
+        message = event["message"]
+        image_data = event["image_data"]
+
+        try:
+            # Procesar la imagen recibida
+            processed_image = process_video(image_data)
+
+            # Convertir a base64 de nuevo
+            processed_image_base64 = base64.b64encode(processed_image).decode('utf-8')
+
+            # Concatenar
+            image_data = 'data:image/jpeg;base64,' + processed_image_base64
+
+            # Enviar los datos de imagen procesados de vuelta al cliente
+            await self.send(text_data=json.dumps({"message": message, "image_data": image_data}))
+        except Exception as e:
+            print(f"Error al procesar la imagen: {e}")
