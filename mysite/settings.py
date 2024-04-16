@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
+# ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -38,14 +39,14 @@ if RENDER_EXTERNAL_HOSTNAME:
 INSTALLED_APPS = [
     "daphne",
     'chat',
-    'rest_framework',
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles'
+    # 'rest_framework',
+    # 'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -108,10 +109,10 @@ DATABASES = {
 }
 
 #CORS
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:4200',
-    'https://images-pyxpert-frontend.vercel.app'
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:4200',
+#     'https://images-pyxpert-frontend.vercel.app'
+# ]
 
 
 # Password validation

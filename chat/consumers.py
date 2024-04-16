@@ -33,7 +33,7 @@ def process_video(image):
                 nuevoContorno = cv2.convexHull(c)
                 cv2.drawContours(frame, [nuevoContorno], 0, color, 3)
 
-    if image is not None and 'data:image/jpeg;base64' in image:
+    if image is not None and 'data:image/jpeg;base64,' in image:
         image_base64 = image.replace('data:image/jpeg;base64,', '')
         decode_image = base64.b64decode(image_base64)
         # Decodificar la imagen usando OpenCV
@@ -129,14 +129,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
-        self.id = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.id
-        self.user = self.scope['user']
-
-        # print("Id : ", self.id)
-        # print("Conexión establecida room_group_name: ", self.room_group_name)
-        # print("Conexión establecida channel_name: ", self.channel_name)
-
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -153,13 +145,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             message = text_data_json["message"]
             image_data = text_data_json["image_data"]
 
-            # draw
-            # image_process = await ProcessVideo.run(image_data)
-
             # Send message to room group
             await self.channel_layer.group_send(
-                self.room_group_name, {"type": "chat.message",
-                                       "message": message, "image_data": image_data}
+                self.room_group_name, {"type": "chat.message","message": message, "image_data": image_data}
             )
         except:
             print('Error inesperado')
