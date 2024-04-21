@@ -20,9 +20,24 @@
     </style>
   </head>
   <body>
-    <textarea style="display: none;" id="chat-log" cols="100" rows="20"></textarea>
-    <input style="display: none;" id="chat-message-input" type="text" size="100" />
-    <input style="display: none;" id="chat-message-submit" type="button" value="Send" />
+    <textarea
+      style="display: none"
+      id="chat-log"
+      cols="100"
+      rows="20"
+    ></textarea>
+    <input
+      style="display: none"
+      id="chat-message-input"
+      type="text"
+      size="100"
+    />
+    <input
+      style="display: none"
+      id="chat-message-submit"
+      type="button"
+      value="Send"
+    />
     <canvas id="preview"></canvas>
     {{room_name|json_script:"room-name" }}
     <script>
@@ -30,20 +45,13 @@
         document.getElementById("room-name").textContent
       );
 
-      var chatSocket;
       var chatLog = document.querySelector("#chat-log");
       var canvas = document.querySelector("#preview");
       var ctx = canvas.getContext("2d");
 
-      if (window.location.protocol === "https") {
-        chatSocket = new WebSocket(
-          "wss://" + window.location.host + "/ws/chat/" + roomName + "/"
-        );
-      } else {
-        chatSocket = new WebSocket(
-          "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
-        );
-      }
+      var chatSocket = new WebSocket(
+        "wss://" + window.location.host + "/ws/chat/" + roomName + "/"
+      );
 
       chatSocket.onmessage = function (e) {
         const message = JSON.parse(e.data).message;
