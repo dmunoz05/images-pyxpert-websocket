@@ -1,7 +1,6 @@
 # chat/consumers.py
 import json
-from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
-from asgiref.sync import async_to_sync
+from channels.generic.websocket import AsyncWebsocketConsumer
 import cv2
 import numpy as np
 import base64
@@ -38,7 +37,10 @@ def process_video(image):
         decode_image = base64.b64decode(image_base64)
         # Decodificar la imagen usando OpenCV
         im_arr = np.frombuffer(decode_image, dtype=np.uint8)
-        Img = cv2.imdecode(im_arr, -1)
+        # Img = cv2.imdecode(im_arr, cv2.IMREAD_UNCHANGED)
+        # Img = cv2.imdecode(im_arr, cv2.IMREAD_COLOR)
+        Img = cv2.imdecode(im_arr, cv2.IMREAD_COLOR)
+        # Img = cv2.imdecode(im_arr, -1)
 
         # Colores HSV
         # Rojo
@@ -116,7 +118,7 @@ def process_video(image):
             buffer = BytesIO()
 
             # Convertir la imagen a BytesIO
-            Image.fromarray(Img).save(buffer, format='PNG')
+            Image.fromarray(Img).save(buffer, format='JPEG')
 
             # Obtener los datos de la imagen
             image_data = buffer.getvalue()
@@ -147,7 +149,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
             # Send message to room group
             await self.channel_layer.group_send(
-                self.room_group_name, {"type": "chat.message","message": message, "image_data": image_data}
+                self.room_group_name, {"type": "chat.message",
+                                       "message": message, "image_data": image_data}
             )
         except:
             print('Error inesperado')
@@ -162,7 +165,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             processed_image = process_video(image_data)
 
             # Convertir a base64 de nuevo
-            processed_image_base64 = base64.b64encode(processed_image).decode('utf-8')
+            processed_image_base64 = base64.b64encode(
+                processed_image).decode('utf-8')
 
             # Concatenar
             image_data = 'data:image/jpeg;base64,' + processed_image_base64

@@ -59,7 +59,7 @@
       };
 
       chatSocket.onclose = function (e) {
-        console.error("Chat socket closed unexpectedly");
+        console.error("El WebSocket se cerró inesperadamente. Código:", e.code, " Razón:", e.reason);
       };
 
       document.querySelector("#chat-message-input").focus();
