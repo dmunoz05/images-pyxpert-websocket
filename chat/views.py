@@ -2,6 +2,7 @@
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.shortcuts import render
 
+@xframe_options_exempt
 def index(request):
     return render(request, "chat/index.html")
 
