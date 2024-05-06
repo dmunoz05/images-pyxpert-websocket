@@ -6,6 +6,7 @@ import numpy as np
 import base64
 from io import BytesIO
 from PIL import Image
+import matplotlib.pyplot as plt
 
 
 def process_video(image):
@@ -37,9 +38,8 @@ def process_video(image):
         decode_image = base64.b64decode(image_base64)
         # Decodificar la imagen usando OpenCV
         im_arr = np.frombuffer(decode_image, dtype=np.uint8)
-        # Img = cv2.imdecode(im_arr, cv2.IMREAD_UNCHANGED)
+        Img = cv2.imdecode(im_arr, cv2.IMREAD_UNCHANGED)
         # Img = cv2.imdecode(im_arr, cv2.IMREAD_COLOR)
-        Img = cv2.imdecode(im_arr, cv2.IMREAD_COLOR)
         # Img = cv2.imdecode(im_arr, -1)
 
         # Colores HSV
@@ -78,6 +78,7 @@ def process_video(image):
         violetaAlto = np.array([170, 255, 255], np.uint8)
 
         if Img.shape[0] > 0 and Img.shape[1] > 0 and Img is not None:
+            # frameHSV = cv2.cvtColor(Img, cv2.COLOR_BGR2HSV)
             frameHSV = cv2.cvtColor(Img, cv2.COLOR_BGR2HSV)
             # Detectamos los colores
 
@@ -108,7 +109,7 @@ def process_video(image):
 
             # Dibujamos los contornos
             draw(maskRed, (0, 0, 255), 'Rojo', Img)
-            draw(maskOrange, (0, 165, 255), 'Naranja', Img)
+            draw(maskOrange, (0, 165, 255),     'Naranja', Img)
             draw(maskAmarillo, (0, 255, 255), 'Amarillo', Img)
             draw(maskVerde, (0, 255, 0), 'Verde', Img)
             draw(maskAzul, (255, 0, 0), 'Azul', Img)
@@ -117,8 +118,15 @@ def process_video(image):
 
             buffer = BytesIO()
 
+            # Mostrar la imagen con los contornos a color original
+            imageColor = cv2.cvtColor(Img, cv2.COLOR_BGR2RGB)
+
+            # plt.imshow(imageColor)
+            # plt.axis("off")
+            # plt.show()
+
             # Convertir la imagen a BytesIO
-            Image.fromarray(Img).save(buffer, format='JPEG')
+            Image.fromarray(imageColor).save(buffer, format='JPEG')
 
             # Obtener los datos de la imagen
             image_data = buffer.getvalue()
