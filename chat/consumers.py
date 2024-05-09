@@ -18,8 +18,7 @@ def process_mdf_video(image):
         cwd = os.getcwd()
         directory = os.path.join(
             cwd, 'models', 'haarcascade_frontalface_default.xml')
-        face_classifier = cv2.CascadeClassifier(
-            '/haarcascade_frontalface_default.xml')
+        face_classifier = cv2.CascadeClassifier(directory)
         I_gris = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
         faces = face_classifier.detectMultiScale(I_gris, 1.1, 5)
 
